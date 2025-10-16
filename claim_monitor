@@ -2,5 +2,5 @@
 exec busctl call com.eztux.ClaimMonitor \
                 /com/eztux/ClaimMonitor \
                 com.eztux.ClaimMonitor \
-                Switch
+                Switch s "${1:-default}"
 
