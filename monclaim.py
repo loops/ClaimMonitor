@@ -24,12 +24,30 @@ class ClaimMonitor:
         self.probe = shlex.split(probe)
         self.match = config.get('monitor', 'match').strip()
         self.debug = config.getboolean('monitor', 'debug')
+        threshold_seconds = 2
+        self.threshold_ns = threshold_seconds * 1_000_000_000  # Convert to nanoseconds
+        self.last_call_time_ns = None
+
+    def should_process(self):
+        current_time_ns = time.monotonic_ns()
+
+        if self.last_call_time_ns is not None:
+            elapsed_ns = current_time_ns - self.last_call_time_ns
+            if elapsed_ns < self.threshold_ns:
+                return False  # Too soon, skip processing
+
+        self.last_call_time_ns = current_time_ns
+        return True
+
     def Msg(self, out):
         if self.debug:
             current_sec = time.monotonic_ns() / 1000000000
             print(f"{current_sec}: {out}", flush=True)
 
     def Switch(self):
+        if not self.should_process():
+            return
+        self.Msg(f"--Switch invoked--")
         run = subprocess.run(self.probe, capture_output=True, text=True)
         current = run.stdout.strip()
         if current != self.match:
