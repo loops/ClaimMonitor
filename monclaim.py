@@ -24,8 +24,8 @@ class ClaimMonitor:
         self.probe = shlex.split(probe)
         self.match = config.get('monitor', 'match').strip()
         self.debug = config.getboolean('monitor', 'debug')
-        threshold_seconds = 2
-        self.threshold_ns = threshold_seconds * 1_000_000_000  # Convert to nanoseconds
+        lockout_seconds = config.getint('monitor', 'lockout_seconds', fallback=2)
+        self.lockout_ns = lockout_seconds * 1_000_000_000  # Convert to nanoseconds
         self.last_call_time_ns = None
 
     def should_process(self):
@@ -33,7 +33,7 @@ class ClaimMonitor:
 
         if self.last_call_time_ns is not None:
             elapsed_ns = current_time_ns - self.last_call_time_ns
-            if elapsed_ns < self.threshold_ns:
+            if elapsed_ns < self.lockout_ns:
                 return False  # Too soon, skip processing
 
         self.last_call_time_ns = current_time_ns
