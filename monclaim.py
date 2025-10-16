@@ -5,6 +5,7 @@ from gi.repository import GLib
 import configparser
 import shlex
 import subprocess
+import time
 
 class ClaimMonitor:
     """
@@ -25,7 +26,9 @@ class ClaimMonitor:
         self.debug = config.getboolean('monitor', 'debug')
     def Msg(self, out):
         if self.debug:
-            print(out, flush=True)
+            current_sec = time.monotonic_ns() / 1000000000
+            print(f"{current_sec}: {out}", flush=True)
+
     def Switch(self):
         run = subprocess.run(self.probe, capture_output=True, text=True)
         current = run.stdout.strip()
