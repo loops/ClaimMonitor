@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# A simple dbus service to query the monitor to see which input it is using
+# and if it is different than the one we want, send command to switch inputs
+# You must install ddcutil onto your system
+# The ini file is what is required on one of my systems, ymmv
+
+
+# Copy dbus policy to  /etc/dbus-1/system.d/com.eztux.ClaimMonitor.conf.
+sudo cp -i com.eztux.ClaimMonitor.conf /etc/dbus-1/system.d/
+
+# Although, they might be detected automatically without this,
+# Reload the system bus config via:
+    busctl call org.freedesktop.DBus \
+                /org/freedesktop/DBus \
+                org.freedesktop.DBus \
+                ReloadConfig
+
+# Copy the service script into /usr/local:
+sudo mkdir -p /usr/local/libexec/
+sudo cp -i monclaim.py /usr/local/libexec/
+
+# Copy and edit as needed the ini file for the service
+sudo cp -i ClaimMonitor.ini /etc/
+
+# Install the service file
+sudo cp -i ClaimMonitor.service /etc/systemd/system/
+sudo systemctl enable --now ClaimMonitor
+
+# copy the trigger script
+sudo cp -i claim_monitor /usr/local/bin/
+
+Now you can call claim_monitor as an unprivileged user to restore
+the monitor input selection to the current machine

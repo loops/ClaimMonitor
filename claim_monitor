@@ -1,0 +1,6 @@
+#!/bin/bash
+exec busctl call com.eztux.ClaimMonitor \
+                /com/eztux/ClaimMonitor \
+                com.eztux.ClaimMonitor \
+                Switch
+

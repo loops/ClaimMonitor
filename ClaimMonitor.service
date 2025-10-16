@@ -1,0 +1,16 @@
+[Unit]
+Description=ClaimMonitor D-Bus Service
+After=dbus.service
+Requires=dbus.service
+
+[Service]
+ExecStart=/usr/local/libexec/monclaim.py
+User=root
+BusName=com.eztux.ClaimMonitor
+Restart=on-failure
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
