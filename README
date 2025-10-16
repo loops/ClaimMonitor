@@ -2,9 +2,9 @@
 
 # A simple dbus service to query the monitor to see which input it is using
 # and if it is different than the one we want, send command to switch inputs
-# You must install ddcutil onto your system
-# The ini file is what is required on one of my systems, ymmv
 
+# You must install ddcutil and pydbus, for example:
+sudo dnf install ddcutil python3-pydbus
 
 # Copy dbus policy to  /etc/dbus-1/system.d/com.eztux.ClaimMonitor.conf.
 sudo cp -i com.eztux.ClaimMonitor.conf /etc/dbus-1/system.d/
@@ -21,6 +21,7 @@ sudo mkdir -p /usr/local/libexec/
 sudo cp -i monclaim.py /usr/local/libexec/
 
 # Copy and edit as needed the ini file for the service
+#  The ini file params were required on one of my systems, ymmv
 sudo cp -i ClaimMonitor.ini /etc/
 
 # Install the service file
@@ -30,5 +31,5 @@ sudo systemctl enable --now ClaimMonitor
 # copy the trigger script
 sudo cp -i claim_monitor /usr/local/bin/
 
-Now you can call claim_monitor as an unprivileged user to restore
-the monitor input selection to the current machine
+# Now you can call claim_monitor as an unprivileged user to restore
+# the monitor input selection to the current machine
