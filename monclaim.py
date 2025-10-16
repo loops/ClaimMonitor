@@ -23,6 +23,7 @@ class ClaimMonitor:
         probe = config.get('monitor', 'probe')
         self.probe = shlex.split(probe)
         self.match = config.get('monitor', 'match').strip()
+        self.error = config.get('monitor', 'error').strip()
         self.debug = config.getboolean('monitor', 'debug')
         lockout_seconds = config.getint('monitor', 'lockout_seconds', fallback=2)
         self.lockout_ns = lockout_seconds * 1_000_000_000  # Convert to nanoseconds
@@ -50,7 +51,9 @@ class ClaimMonitor:
         self.Msg(f"--Switch invoked--")
         run = subprocess.run(self.probe, capture_output=True, text=True)
         current = run.stdout.strip()
-        if current != self.match:
+        if current == self.error:
+            self.Msg(f"Monitor returned [{current}] error.")
+        elif current != self.match:
             self.Msg(f"Monitor returned [{current}] which doesn't match.")
             subprocess.run(self.switch)
         else:
