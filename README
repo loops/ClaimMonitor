@@ -3,6 +3,10 @@
 # A simple dbus service to query the monitor to see which input it is using
 # and if it is different than the one we want, send command to switch inputs
 
+# I use this with my software KVM,  whenever the mouse changes computers
+#  it invokes a script to change the selected input on my monitor.  This
+#   way both computers share a single keyboard/mouse and monitor.
+
 # You must install ddcutil and pydbus, for example:
 sudo dnf install ddcutil python3-pydbus
 
