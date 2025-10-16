@@ -45,7 +45,6 @@ class ClaimMonitor:
             if elapsed_ns < self.lockout_ns:
                 return False  # Too soon, skip processing
 
-        self.last_call_time_ns = current_time_ns
         return True
 
     def Msg(self, out):
@@ -69,6 +68,7 @@ class ClaimMonitor:
         elif current != data.match:
             self.Msg(f"Monitor returned [{current}] which doesn't match.")
             subprocess.run(data.switch)
+            self.last_call_time_ns = time.monotonic_ns()
         else:
             self.Msg(f"Monitor is already on current input.")
 
